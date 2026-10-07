@@ -1,0 +1,26 @@
+Sandbox (bubblewrap): private /tmp; this account is uid 1000; /tmp/firstmate-herdr-presentation is a real
+mode-700 directory owned by ANOTHER uid (65534), as when a second OS account on the host created it first.
+
+=================== BEFORE: base ac0811c bin/backends/herdr.sh ===================
+$ id -u   # this account
+1000
+$ ls -ldn /tmp/firstmate-herdr-presentation*
+drwx------ owner-uid=65534 /tmp/firstmate-herdr-presentation
+$ fm-teardown.sh task-x1 --force
+  error: herdr session presentation lock could not be resolved for task-x1; nothing was changed - rerun teardown once the session is reachable and unambiguous
+exit=1  pane-closed=no  task-meta-retained=yes
+$ ls -ldn /tmp/firstmate-herdr-presentation*   # after
+drwx------ owner-uid=65534 /tmp/firstmate-herdr-presentation
+
+=================== AFTER: fix e032f75 bin/backends/herdr.sh ===================
+$ id -u   # this account
+1000
+$ ls -ldn /tmp/firstmate-herdr-presentation*
+drwx------ owner-uid=65534 /tmp/firstmate-herdr-presentation
+$ fm-teardown.sh task-x1 --force
+  teardown task-x1 complete (window default:wG:pQ, worktree /tmp/fm-teardown-tests.dXWFx5/demo-after/wt)
+  Backlog: task-x1 just finished (this home keeps no markdown backlog at /tmp/fm-teardown-tests.dXWFx5/demo-after/data/backlog.md). Update /tmp/fm-teardown-tests.dXWFx5/demo-after/data/backlog.md - move task-x1 to Done, keep Done to the 10 most recent, then re-scan Queued and dispatch only work whose blockers are gone and date is due.
+exit=0  pane-closed=yes  task-meta-retained=no
+$ ls -ldn /tmp/firstmate-herdr-presentation*   # after
+drwx------ owner-uid=65534 /tmp/firstmate-herdr-presentation
+drwx------ owner-uid=1000 /tmp/firstmate-herdr-presentation-1000

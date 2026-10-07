@@ -1,0 +1,27 @@
+Fixed adapter (e032f75). Same sandbox as above.
+
+=========== Pre-created /tmp/firstmate-herdr-presentation-1000 owned by ANOTHER uid (mode 700) ===========
+$ id -u   # this account
+1000
+$ ls -ldn /tmp/firstmate-herdr-presentation*
+drwx------ owner-uid=65534 /tmp/firstmate-herdr-presentation
+drwx------ owner-uid=65534 /tmp/firstmate-herdr-presentation-1000
+$ fm-teardown.sh task-x1 --force
+  error: herdr session presentation lock could not be resolved for task-x1; nothing was changed - rerun teardown once the session is reachable and unambiguous
+exit=1  pane-closed=no  task-meta-retained=yes
+$ ls -ldn /tmp/firstmate-herdr-presentation*   # after
+drwx------ owner-uid=65534 /tmp/firstmate-herdr-presentation
+drwx------ owner-uid=65534 /tmp/firstmate-herdr-presentation-1000
+
+=========== /tmp/firstmate-herdr-presentation-1000 owned by this account but mode 755 ===========
+$ id -u   # this account
+1000
+$ ls -ldn /tmp/firstmate-herdr-presentation*
+drwx------ owner-uid=65534 /tmp/firstmate-herdr-presentation
+drwxr-xr-x owner-uid=1000 /tmp/firstmate-herdr-presentation-1000
+$ fm-teardown.sh task-x1 --force
+  error: herdr session presentation lock could not be resolved for task-x1; nothing was changed - rerun teardown once the session is reachable and unambiguous
+exit=1  pane-closed=no  task-meta-retained=yes
+$ ls -ldn /tmp/firstmate-herdr-presentation*   # after
+drwx------ owner-uid=65534 /tmp/firstmate-herdr-presentation
+drwxr-xr-x owner-uid=1000 /tmp/firstmate-herdr-presentation-1000
